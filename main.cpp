@@ -23,7 +23,7 @@ struct node
 
 int main()
 {
-    lbl:
+lbl:
     int choice, subchoice;
     cout << "MENU\n";
     cout << "1>Create playlist" << endl;
