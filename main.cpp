@@ -21,9 +21,13 @@ struct node
     struct node *next;
 } Node;
 
+void edit_record_menu();
+void display_record_menu();
+void play_playlist_menu();
+
 int main()
 {
-    lbl:
+lbl:
     int choice, subchoice;
     cout << "MENU\n";
     cout << "1>Create playlist" << endl;
@@ -41,59 +45,13 @@ int main()
         cout << "Create playlist" << endl;
         break;
     case 2: //function2
-        cout << "Display records" << endl;
-        cout << " 1>Display all records" << endl;
-        cout << " 2>Sort" << endl;
-        cout << " Enter your choice:" << endl;
-        cin >> subchoice;
-        switch (subchoice)
-        {
-        case 1: //subfunction1
-            cout << "all records" << endl;
-            break;
-        case 2: //subfunction2
-            cout << "filtered records" << endl;
-            break;
-        default:
-            cout << "Invalid Input" << endl;
-        }
-
+        display_record_menu();
         break;
     case 3: //function3
-        cout << "Edit records" << endl;
-        cout << " 1>Insert record" << endl;
-        cout << " 2>Delete record" << endl;
-        cout << " Enter your choice:" << endl;
-        cin >> subchoice;
-        switch (subchoice)
-        {
-        case 1: //subfunction1
-            cout << "Insert record" << endl;
-            break;
-        case 2: //subfunction2
-            cout << "Delete record" << endl;
-            break;
-        default:
-            cout << "Invalid Input" << endl;
-        }
+        edit_record_menu();
         break;
     case 4: //function4
-        cout << "Play playlist" << endl;
-        cout << "1>Play from song" << endl;
-        cout << "2>Shuffle play" << endl;
-        cout << " Enter your choice:" << endl;
-        cin >> subchoice;
-        switch (subchoice)
-        {
-        case 1: //subfunction1
-            cout << "Play from song" << endl;
-            break;
-        case 2: //subfunction2
-            cout << "Shuffle play" << endl;
-            break;
-        default:
-            cout << "Invalid Input" << endl;
-        }
+        play_playlist_menu();
         break;
 
     case 5: //function5
@@ -105,4 +63,88 @@ int main()
     }
     goto lbl;
     return 0;
+}
+
+void edit_record_menu()
+{
+lbl:
+    int subchoice;
+    cout << "Edit records Menu" << endl;
+    cout << "1>Insert record" << endl;
+    cout << "2>Delete record" << endl;
+    cout << "3>Return to main menu" << endl;
+    cout << "Enter your choice:";
+    cin >> subchoice;
+    cout << endl;
+    switch (subchoice)
+    {
+    case 1: //subfunction1
+        cout << "Insert record" << endl;
+        break;
+    case 2: //subfunction2
+        cout << "Delete record" << endl;
+        break;
+    case 3:
+        return;
+        break;
+    default:
+        cout << "Invalid Input" << endl;
+        goto lbl;
+    }
+}
+
+void display_record_menu()
+{
+lbl:
+    int subchoice;
+    cout << "Display records" << endl;
+    cout << "1>Display all records" << endl;
+    cout << "2>Sort" << endl;
+    cout << "3>Return to main menu" << endl;
+    cout << "Enter your choice:";
+    cin >> subchoice;
+    cout << endl;
+    switch (subchoice)
+    {
+    case 1: //subfunction1
+        cout << "all records" << endl;
+        break;
+    case 2: //subfunction2
+        cout << "filtered records" << endl;
+        break;
+    case 3:
+        return;
+        break;
+    default:
+        cout << "Invalid Input" << endl;
+    }
+    goto lbl;
+}
+void play_playlist_menu()
+{
+lbl:
+    int subchoice;
+    cout << "Play playlist" << endl;
+    cout << "1>Play from song" << endl;
+    cout << "2>Shuffle play" << endl;
+    cout << "3>Return to main menu" << endl;
+    cout << "Enter your choice:";
+    cin >> subchoice;
+    cout << endl;
+    switch (subchoice)
+    {
+    case 1: //subfunction1
+        cout << "Play from song" << endl;
+        break;
+    case 2: //subfunction2
+        cout << "Shuffle play" << endl;
+        break;
+    case 3:
+        return;
+        break;
+
+    default:
+        cout << "Invalid Input" << endl;
+    }
+    goto lbl;
 }
