@@ -23,6 +23,7 @@ struct node
 
 int main()
 {
+    lbl:
     int choice, subchoice;
     cout << "MENU\n";
     cout << "1>Create playlist" << endl;
@@ -102,6 +103,6 @@ int main()
     default:
         cout << "Invalid Input." << endl;
     }
-
+    goto lbl;
     return 0;
 }
