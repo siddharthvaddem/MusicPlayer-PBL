@@ -125,8 +125,16 @@ lbl:
 
         cout << "Enter the name of the song to be added:";
         getline(cin, song_name);
+        for (auto &c : song_name)
+        {
+            c = tolower(c);
+        }
         for (int i = 0; i < size; i++)
         {
+            for (auto &c : data[i].song)
+            {
+                c = tolower(c);
+            }
             if (data[i].song == song_name)
             {
                 new_song = new playlist();
@@ -151,6 +159,7 @@ lbl:
         break;
     case 3:
         song = head;
+
         while (song != NULL)
         {
             cout << song->song << "," << song->album << "," << song->artist << "," << song->genre << "\n";
