@@ -4,5 +4,6 @@
         "xstring": "cpp",
         "xiosbase": "cpp",
         "string": "cpp"
-    }
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }
