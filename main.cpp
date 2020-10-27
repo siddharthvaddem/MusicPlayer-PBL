@@ -18,6 +18,10 @@ typedef struct info
     string genre;
     string link;
 } Info;
+struct playlist : info //Inheriting from info structure
+{
+    struct playlist *next;
+} * head;
 typedef struct login
 {
     string username;
@@ -27,21 +31,15 @@ typedef struct login
 
 Login details[100];
 int arr[100];
-
-struct playlist : info //Inheriting from info structure
-{
-    struct playlist *next;
-} * head;
-
 int size = 0;
+string userplaylist;
 
 void create_playlist_menu();
 void edit_record_menu();
+void play_playlist_menu();
 void display_record_menu(Info data[]);
 int readFile(Info data[], string filename);
 void display_all_records(Info data[], int size);
-void play_playlist_menu();
-void filter_records();
 void shuffle();
 void randomize(int arr[], int);
 void swap(int arr[], int, int);
@@ -49,50 +47,76 @@ string signin();
 string signup();
 void addLoginData(string, string, string);
 int readLoginData(Login details[]);
-string userplaylist;
+
+//----------------------------------------------MAIN FUNCTION----------------------------------------------------
 int main()
 {
     Info data[100];
     int loginchoice;
+    bool entered = false;
     system("color B5");
-    cout << "OPENING APPLICATION....." << endl;
-    sleep(2);
+    cout << "OPENING APPLICATION ";
+    for (int j = 0; j < 2; j++)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            cout << ".";
+            cout.flush();
+            sleep(1);
+        }
+        cout << "\b\b\b   \b\b\b";
+    }
 login:
+    cin.clear();
+    cin.sync();
     system("CLS");
-
     system("color F1");
     cout << "WELCOME TO ZUNE " << endl;
     cout << "SIGN IN TO CONTINUE- " << endl;
     cout << "1>ALREADY HAVE AN ACCOUNT?" << endl;
     cout << "2>CREATE NEW ACCOUNT" << endl;
     cout << "3>QUIT APPLICATION" << endl;
-label:
     cout << "ENTER YOUR CHOICE- ";
     cin >> loginchoice;
-    system("CLS");
     cout << endl;
     switch (loginchoice)
     {
     case 1: //call signin func
         userplaylist = signin();
+        entered = true;
         break;
     case 2: //call signup function
         userplaylist = signup();
+        entered = true;
         break;
     case 3:
         system("color B5");
         system("CLS");
-        cout << "CLOSING APPLICATION......";
-        sleep(2);
+        cout << "CLOSING APPLICATION";
+        for (int i = 0; i < 3; i++)
+        {
+            cout << ".";
+            cout.flush();
+            sleep(1);
+        }
+        cout << "\b\b\b   \b\b\b";
         exit(0);
         break;
     default:
         cout << "Invalid Input" << endl;
-        goto label;
+        sleep(1);
+        break;
+    }
+    if (!entered)
+    {
+        goto login;
     }
 lbl:
     int choice, subchoice;
     string input;
+    cin.clear();
+    cin.sync();
+    system("CLS");
     system("color E4");
     cout << "MENU\n";
     cout << "1>CREATE PLAYLIST" << endl;
@@ -116,7 +140,6 @@ lbl:
         edit_record_menu();
         break;
     case 4: //function4
-
         play_playlist_menu();
         system("color F4");
         break;
@@ -143,10 +166,12 @@ lbl:
     default:
         cout << "INVALID INPUT" << endl;
         sleep(1);
+        break;
     }
     goto lbl;
     return 0;
 }
+//-------------------------------------------------CREATING A PLAYLIS--------------------------------------------
 void write_to_playlist(playlist *song, string name)
 {
     ofstream fout;
@@ -183,6 +208,8 @@ void create_playlist_menu()
     fout.close();
     size = readFile(data, "dummy.csv");
 lbl:
+    cin.clear();
+    cin.sync();
     system("CLS");
     cout << "Menu" << endl;
     cout << "1>DISPLAY AVAILABLE SONGS" << endl;
@@ -247,9 +274,18 @@ lbl:
     case 4:
         write_to_playlist(new_song, name);
         delete new_song;
-        cout << "SAVING PLAYLIST....." << endl;
-        sleep(1);
+        cout << "SAVING PLAYLIST";
+        for (int i = 0; i < 3; i++)
+        {
+            cout << ".";
+            cout.flush();
+            sleep(1);
+        }
+        cout << "\b\b\b   \b\b\b";
         system("color 2E");
+        system("CLS");
+
+        cout << endl;
         cout << "PLAYLIST SAVED" << endl;
         sleep(2);
         system("color F4");
@@ -259,9 +295,13 @@ lbl:
     default:
         cout << "INVALID INPUT";
         sleep(1);
+        break;
     }
     goto lbl;
 }
+
+//------------------------------------EDIT PLAYLIST-------------------------------------------------------------
+
 void insert_song()
 {
     cin.clear();
@@ -370,7 +410,7 @@ void remove_song()
     cin.sync();
     string search, playlistName, filename = userplaylist + ".csv";
     bool notfound = true;
-    cout << "ENTER THE NAME OF HE PLAYLIST YOU WANT TO DELETE THE SONG FROM:";
+    cout << "ENTER THE NAME OF THE PLAYLIST YOU WANT TO DELETE THE SONG FROM:";
     getline(cin, search);
     for (auto &c : search)
     {
@@ -461,6 +501,8 @@ void edit_record_menu()
 {
 lbl:
     int subchoice;
+    cin.clear();
+    cin.sync();
     system("CLS");
     cout << "EDIT RECORDS MENU" << endl;
     cout << "1>INSERT SONG INTO YOUR PLAYLIST" << endl;
@@ -487,51 +529,37 @@ lbl:
         cout << "INVALID INPUT" << endl;
         sleep(1);
         system("CLS");
+        break;
     }
-
     goto lbl;
 }
-
-void display_record_menu(Info data[])
+//-----------------------------------------DISPLAY RECORDS----------------------------------------------------
+void display_playlist()
 {
-lbl:
-    system("CLS");
-    int subchoice;
-    int size;
-    cout << endl
-         << endl;
-    cout << "DISPLAY RECORDS" << endl;
-    cout << "1>DISPLAY ALL SONGS" << endl;
-    cout << "2>FILTER SONGS AND SEARCH" << endl;
-    cout << "3>RETURN TO MAIN MENU" << endl;
-    cout << "ENTER YOUR CHOICE:";
-    cin >> subchoice;
-    cout << endl;
-
-    switch (subchoice)
+    cout << "YOUR PLAYLIST'S ARE:" << endl;
+    string filename = userplaylist + ".csv", playlistName;
+    ifstream fin(filename);
+    if (!fin)
     {
-    case 1: //subfunction1
-        system("CLS");
-        cout << "ALL RECORDS" << endl;
-        cout << endl;
-        size = readFile(data, "dummy.csv");
-        display_all_records(data, size);
-        break;
-    case 2: //subfunction2
-        system("CLS");
-        filter_records();
-        break;
-
-    case 3:
-        system("CLS");
-        return;
-        break;
-    default:
-        cout << "INVALID INPUT" << endl;
+        cout << "FILE COULDN'T BE OPENED!!" << endl;
         sleep(1);
-        system("CLS");
     }
-    goto lbl;
+    else
+    {
+        while (!fin.eof())
+        {
+            getline(fin, playlistName);
+            if (playlistName.length() != 0)
+            {
+                playlistName = playlistName.erase(0, userplaylist.length());
+                int length = playlistName.length() - 4;
+                playlistName = playlistName.erase(length);
+                cout << playlistName << endl;
+            }
+        }
+    }
+    sleep(3);
+    fin.close();
 }
 
 void filter_records()
@@ -543,6 +571,8 @@ lbl2:
     ifstream fin;
     bool notfound = true;
     int i = 0, a = 0;
+    cin.clear();
+    cin.sync();
     system("CLS");
     cout << "FILTER BY -" << endl;
     cout << "1>ARTIST " << endl;
@@ -553,13 +583,10 @@ lbl2:
     cout << "ENTER YOUR CHOICE ";
     cin >> Subchoice;
     cout << endl;
-    cin.clear();
-    cin.sync();
     switch (Subchoice)
     {
     case 1: //filter by artist
         system("CLS");
-
         fin.open("dummy.csv");
         if (!fin)
         {
@@ -591,7 +618,6 @@ lbl2:
                     {
                         c = toupper(c);
                     }
-
                     notfound = false;
                     filtered[i].song = temp[i].song;
                     filtered[i].album = temp[i].album;
@@ -644,7 +670,6 @@ lbl2:
             cout << endl;
             while (!fin.eof())
             {
-
                 getline(fin, read, ',');
                 for (auto &c : read)
                 {
@@ -656,7 +681,6 @@ lbl2:
                     {
                         c = toupper(c);
                     }
-
                     notfound = false;
                     filtered[i].song = read;
                     getline(fin, temp[i].album, ',');
@@ -690,7 +714,6 @@ lbl2:
             }
         }
         fin.close();
-
         break;
     case 3: //filter by album
         system("CLS");
@@ -717,14 +740,12 @@ lbl2:
                 {
                     c = tolower(c);
                 }
-
                 if (read == search)
                 {
                     for (auto &c : read)
                     {
                         c = toupper(c);
                     }
-
                     notfound = false;
                     filtered[i].song = temp[i].song;
                     filtered[i].album = read;
@@ -810,7 +831,6 @@ lbl2:
                 {
                     getline(fin, trash, '\n');
                 }
-
                 i++;
             }
             sleep(3);
@@ -829,18 +849,69 @@ lbl2:
     default:
         cout << "INVALID INPUT" << endl;
         sleep(1);
+        break;
     }
     goto lbl2;
 }
+
+void display_record_menu(Info data[])
+{
+lbl:
+    int subchoice;
+    int size;
+    cin.clear();
+    cin.sync();
+    system("CLS");
+    cout << endl
+         << endl;
+    cout << "DISPLAY RECORDS" << endl;
+    cout << "1>DISPLAY ALL SONGS" << endl;
+    cout << "2>FILTER SONGS AND SEARCH" << endl;
+    cout << "3>DISPLAY YOUR PLAYLISTS " << endl;
+    cout << "4>RETURN TO MAIN MENU" << endl;
+    cout << "ENTER YOUR CHOICE:";
+    cin >> subchoice;
+    cout << endl;
+    switch (subchoice)
+    {
+    case 1: //subfunction1
+        system("CLS");
+        cout << "ALL RECORDS" << endl;
+        cout << endl;
+        size = readFile(data, "dummy.csv");
+        display_all_records(data, size);
+        break;
+    case 2: //subfunction2
+        system("CLS");
+        filter_records();
+        break;
+    case 3:
+        system("CLS");
+        display_playlist();
+        break;
+    case 4:
+        system("CLS");
+        return;
+        break;
+    default:
+        cout << "INVALID INPUT" << endl;
+        sleep(1);
+        system("CLS");
+        break;
+    }
+    goto lbl;
+}
+
+//------------------------------------------PLAY PLAYLIST------------------------------------------------------
 void shuffle()
 {
-
 lbl3:
     int choice, i = 0;
     Info data[100];
     bool notfound = true;
     cin.clear();
     cin.sync();
+    system("CLS");
     string search, playlistName, filename = userplaylist + ".csv";
     cout << "ENTER THE NAME OF THE PLAYLIST YOU WANT TO PLAY:";
     getline(cin, search);
@@ -856,27 +927,41 @@ lbl3:
         count++;
     }
     randomize(arr, size);
-
 lbl1:
-    for (int i = 0; i < size; i++)
-        cout << arr[i] << " ";
-    cout << "\n";
     string link = "open " + data[arr[i]].link + " alias MyFile";
     int a = 0;
     mciSendStringA(link.c_str(), NULL, 0, 0);
     mciSendString(TEXT("play MyFile "), NULL, 0, 0);
 lbl:
     system("CLS");
-    cout << "NOW playing  " << data[arr[i]].song << " by " << data[arr[i]].artist << "....." << endl;
     if (a == 0)
     {
-        cout << "Options\n1>PAUSE\n2>PLAY NEXT SONG\n3>PLAY PREVIOUS SONG\n4>CHOOSE ANOTHER PLAYLIST\n5>STOP\nENTER YOUR CHOICE:";
+        cout << "Options\n1>PAUSE\n2>PLAY NEXT SONG\n3>PLAY PREVIOUS SONG\n4>CHOOSE ANOTHER PLAYLIST\n5>STOP\nENTER YOUR CHOICE:" << endl;
+        cout << "NOW playing  " << data[arr[i]].song << " by " << data[arr[i]].artist << " ";
+        cout.flush();
+        for (int i = 0; i < 3; i++)
+        {
+            cout << ".";
+            cout.flush();
+            sleep(1);
+        }
+        cout << "\b\b\b   \b\b\b";
+        cout << endl;
         cin >> choice;
         choice = choice + 1;
     }
     else
     {
-        cout << "Options\n1>CONTINUE\n2>PAUSE\n3>PLAY NEXT SONG\n4>PLAY PREVIOUS SONG\n5>CHOOSE ANOTHER PLAYLIST\n6>STOP\nENTER YOUR CHOICE:";
+        cout << "Options\n1>CONTINUE\n2>PAUSE\n3>PLAY NEXT SONG\n4>PLAY PREVIOUS SONG\n5>CHOOSE ANOTHER PLAYLIST\n6>STOP\nENTER YOUR CHOICE:" << endl;
+        cout << "NOW playing  " << data[arr[i]].song << " by " << data[arr[i]].artist << " ";
+        cout.flush();
+        for (int i = 0; i < 3; i++)
+        {
+            cout << ".";
+            cout.flush();
+            sleep(1);
+        }
+        cout << "\b\b\b   \b\b\b";
         cin >> choice;
     }
     switch (choice)
@@ -893,7 +978,6 @@ lbl:
         {
             i = i + 1;
             mciSendString(TEXT("close MyFile"), NULL, 0, 0);
-
             goto lbl1;
         }
         else
@@ -929,6 +1013,7 @@ lbl:
     default:
         cout << "INVALID CHOICE" << endl;
         sleep(1);
+        break;
     }
     goto lbl;
 }
@@ -956,6 +1041,7 @@ lbl3:
     bool notfound = true;
     cin.clear();
     cin.sync();
+    system("CLS");
     string playlistName, search, filename = userplaylist + ".csv";
     cout << "ENTER THE NAME OF THE PLAYLIST YOU WANT TO PLAY:";
     getline(cin, search);
@@ -986,7 +1072,6 @@ lbl3:
         return;
     }
     size = readFile(data, search);
-
 lbl1:
     string link = "open " + data[i].link + " alias MyFile";
     int a = 0;
@@ -994,17 +1079,35 @@ lbl1:
     mciSendString(TEXT("play MyFile "), NULL, 0, 0);
 lbl:
     system("CLS");
-    cout << "NOW playing  " << data[i].song << " by " << data[i].artist << "....." << endl;
     if (a == 0)
     {
-
-        cout << "Options\n1>PAUSE\n2>PLAY NEXT SONG\n3>PLAY PREVIOUS SONG\n4>CHOOSE ANOTHER PLAYLIST\n5>STOP\nENTER YOUR CHOICE:";
+        cout << "Options\n1>PAUSE\n2>PLAY NEXT SONG\n3>PLAY PREVIOUS SONG\n4>CHOOSE ANOTHER PLAYLIST\n5>STOP\nENTER YOUR CHOICE:" << endl;
+        cout << "NOW playing  " << data[i].song << " by " << data[i].artist << " ";
+        cout.flush();
+        for (int i = 0; i < 3; i++)
+        {
+            cout << ".";
+            cout.flush();
+            sleep(1);
+        }
+        cout << "\b\b\b   \b\b\b";
+        cout << endl;
         cin >> choice;
         choice = choice + 1;
     }
     else
     {
-        cout << "Options\n1>CONTINUE\n2>PAUSE\n3>PLAY NEXT SONG\n4>PLAY PREVIOUS SONG\n5>CHOOSE ANOTHER PLAYLIST\n6>STOP\nENTER YOUR CHOICE:";
+        cout << "Options\n1>CONTINUE\n2>PAUSE\n3>PLAY NEXT SONG\n4>PLAY PREVIOUS SONG\n5>CHOOSE ANOTHER PLAYLIST\n6>STOP\nENTER YOUR CHOICE: " << endl;
+        cout << "NOW playing  " << data[i].song << " by " << data[i].artist << " ";
+        cout.flush();
+        for (int i = 0; i < 3; i++)
+        {
+            cout << ".";
+            cout.flush();
+            sleep(1);
+        }
+        cout << "\b\b\b   \b\b\b";
+        cout << endl;
         cin >> choice;
     }
     switch (choice)
@@ -1055,6 +1158,7 @@ lbl:
     default:
         cout << "INVALID CHOICE" << endl;
         sleep(1);
+        break;
     }
     goto lbl;
 }
@@ -1062,6 +1166,8 @@ lbl:
 void play_playlist_menu()
 {
 lbl:
+    cin.clear();
+    cin.sync();
     system("CLS");
     system("color 0B");
     int subchoice;
@@ -1102,11 +1208,13 @@ void display_all_records(Info data[], int size)
     cout << "SONG" << setw(30) << "ALBUM" << setw(30) << "ARTIST" << setw(30) << "GENRE" << endl;
     for (int i = 0; i < size; i++)
     {
-        cout << data[i].song << setw(30) << data[i].album << setw(30) << data[i].artist << setw(30) << data[i].genre << endl;
+        cout << data[i].song << setw(20) << data[i].album << setw(30) << data[i].artist << setw(30) << data[i].genre << endl;
         sleep(0.5);
     }
     sleep(7);
 }
+
+//-------------------------------OTHER IMPORTANT FUNCTIONS------------------------------------------------------
 int readFile(Info data[], string filename)
 {
     ifstream fin;
@@ -1243,7 +1351,7 @@ label:
                 sleep(2);
                 system("color F4");
                 system("CLS");
-
+                password = "";
                 goto retry;
             }
         }
