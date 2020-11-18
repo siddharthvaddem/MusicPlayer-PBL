@@ -1213,7 +1213,7 @@ lbl:
 void display_all_records(Info data[], int size)
 {
     system("CLS");
-    cout << setw(30) << "SONG" << setw(30) << "ALBUM" << setw(30) << "ARTIST" << setw(30) << "GENRE" << endl;
+    cout << setw(30) << "SONG" << setw(30) << "ALBUM" << setw(30) << "ARTIST" << setw(30) << "GENRE" << endl<<endl;
     for (int i = 0; i < size; i++)
     {
         cout << setw(30) << data[i].song << setw(30) << data[i].album << setw(30) << data[i].artist << setw(30) << data[i].genre << endl;
