@@ -221,6 +221,7 @@ lbl:
     cout << endl;
     cin.clear();
     cin.sync();
+    bool notfound = true;
     switch (choice)
     {
     case 1:
@@ -229,6 +230,7 @@ lbl:
     case 2:
         cout << "ENTER THE NAME OF THE SONG TO BE ADDED:";
         getline(cin, song_name);
+        notfound = true;
         for (auto &c : song_name)
         {
             c = tolower(c);
@@ -248,6 +250,7 @@ lbl:
                 new_song->genre = data[i].genre;
                 new_song->link = data[i].link;
                 new_song->next = NULL;
+                notfound = false;
                 if (head == NULL)
                 {
                     head = new_song;
@@ -260,6 +263,10 @@ lbl:
                     new_song->next = temp;
                 }
             }
+        }
+        if (notfound){
+            cout << "song not found" << endl;
+            sleep(2);
         }
         break;
     case 3:
@@ -1206,10 +1213,10 @@ lbl:
 void display_all_records(Info data[], int size)
 {
     system("CLS");
-    cout << "SONG" << setw(30) << "ALBUM" << setw(30) << "ARTIST" << setw(30) << "GENRE" << endl;
+    cout << setw(30) << "SONG" << setw(30) << "ALBUM" << setw(30) << "ARTIST" << setw(30) << "GENRE" << endl;
     for (int i = 0; i < size; i++)
     {
-        cout << data[i].song << setw(20) << data[i].album << setw(30) << data[i].artist << setw(30) << data[i].genre << endl;
+        cout << setw(30) << data[i].song << setw(30) << data[i].album << setw(30) << data[i].artist << setw(30) << data[i].genre << endl;
         sleep(0.5);
     }
     sleep(7);
